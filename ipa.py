@@ -11,7 +11,7 @@ population_size = 50
 dimension_size = 3
 donors_number = 1
 receivers_number = 1
-maximum_evaluations = 1
+maximum_evaluations = 2500
 bound = 200
 
 # other dependent parameters, no need to change
@@ -87,16 +87,21 @@ def fitness_per_user(user, drone):
 def perform_infection(x_k, x_m):
     j = np.random.randint(0, dimension_size)
     x_k[j] += np.random.uniform(-1.0, 1.0) * (x_k[j] - x_m[j])
-    x_k[j] = check_bounds(x_k[j])
-    return x_k
+    # x_k[j] = check_bounds(x_k[j])
+    return check_bounds(x_k)
 
 # check if exceeded bounds
-def check_bounds(x):
-    if x > upper_bound:
-        x = upper_bound
-    elif x < lower_bound:
-        x = lower_bound
-    return x
+def check_bounds(drone):
+    # check drone's x location
+    if drone[0] > x_upper_bound: drone[0] = x_upper_bound
+    elif drone[0] < x_lower_bound: drone[0] = x_lower_bound
+    # check drone's y location
+    if drone[1] > y_upper_bound: drone[1] = y_upper_bound
+    elif drone[1] < y_lower_bound: drone[1] = y_lower_bound
+    # check drone's z location
+    if drone[2] > z_upper_bound: drone[2] = z_upper_bound
+    elif drone[2] < z_lower_bound: drone[2] = z_lower_bound
+    return drone
 
 # get lists of indexes of doreceivers_numbers and recievers
 def get_donors_and_receivers_indexes(fitnesses):
@@ -113,15 +118,13 @@ def get_donors_and_receivers_indexes(fitnesses):
 def perform_plasma_transfer(receiver, donor):
     for j in range(dimension_size):
         receiver[j] += np.random.uniform(-1.0, 1.0) * (receiver[j] - donor[j])
-        receiver[j] = check_bounds(receiver[j])
-    return receiver
+    return check_bounds(receiver)
 
 # updating donor's parameters
 def update_donor(donor):
     for j in range(dimension_size):
         donor[j] += np.random.uniform(-1.0, 1.0) * donor[j]
-        donor[j] = check_bounds(donor[j])
-    return donor
+    return check_bounds(donor)
 
 # compare individual's fitness with global fitness value
 def compare_with_best_fitness(x):
@@ -129,7 +132,7 @@ def compare_with_best_fitness(x):
     x_fitness = fitness(x)
     if x_fitness < best_fitness:
         best_fitness = x_fitness
-        # print(best_fitness)
+        print(best_fitness)
 
 # check if the drone is inside the building or not
 def drone_is_inside(drone):
@@ -159,13 +162,13 @@ best_fitness = min(fitnesses)
 # print("==> Fitnesses: ")
 # print(fitnesses)
 
-for i in range(population_size):
-    print(f"Location: {population[i, :]} \t- Fitness: {fitnesses[i]} \t- is inside: {drone_is_inside(population[i])}")
+# for i in range(population_size):
+#     print(f"Location: {population[i, :]} \t- Fitness: {fitnesses[i]} \t- is inside: {drone_is_inside(population[i])}")
 
 
-# print(f"Initial best fitness value: {best_fitness}")
-# print(f"Number of parameters: {dimension_size}")
-# print(f"Population size: {population_size}")
+print(f"Initial best fitness value: {best_fitness}")
+print(f"Number of parameters: {dimension_size}")
+print(f"Population size: {population_size}")
 
 while current_evaluation < maximum_evaluations:
 
@@ -233,7 +236,7 @@ while current_evaluation < maximum_evaluations:
             if (current_evaluation / maximum_evaluations) > random():
                 population[donor_index] = update_donor(population[donor_index])
             else:
-                population[donor_index] = generate_individual()
+                population[donor_index] = generate_drone()
             fitnesses[donor_index] = fitness(population[donor_index])
             compare_with_best_fitness(population[donor_index])
         else:
