@@ -5,7 +5,6 @@ import time
 # start timer
 start_time = time.time()
 
-
 # set initial parameters' values
 population_size = 50
 dimension_size = 3
@@ -23,14 +22,14 @@ y_lower_bound = -bound
 z_upper_bound = bound
 z_lower_bound = 0
 
-# BUILDING        = [20, 50, 200]     #b1
-# Users_Locations = np.loadtxt( 'users/UserLocations_20_50_200.dat' )     #u2
+BUILDING        = [20, 50, 200]     #b1
+Users_Locations = np.loadtxt( 'users/UserLocations_20_50_200.dat' )     #u2
 # BUILDING        = [20, 50, 250]     #b2
 # Users_Locations = np.loadtxt( 'users/UserLocations_20_50_250.dat' )     #u2
 # BUILDING        = [20, 50, 300]     #b3
 # Users_Locations = np.loadtxt( 'users/UserLocations_20_50_300.dat' )     #u3
-BUILDING        = [10, 50, 250]     #b4
-Users_Locations = np.loadtxt( 'users/UserLocations_10_50_250.dat' )     #u4
+# BUILDING        = [10, 50, 250]     #b4
+# Users_Locations = np.loadtxt( 'users/UserLocations_10_50_250.dat' )     #u4
 # BUILDING        = [30, 50, 250]     #b5
 # Users_Locations = np.loadtxt( 'users/UserLocations_30_50_250.dat' )     #u5
 # BUILDING        = [50, 50, 250]     #b6
@@ -110,6 +109,8 @@ def check_bounds(drone):
     # check drone's z location
     if drone[2] > z_upper_bound: drone[2] = z_upper_bound
     elif drone[2] < z_lower_bound: drone[2] = z_lower_bound
+    while drone_is_inside(drone):
+        drone = generate_drone()
     return drone
 
 # get lists of indexes of doreceivers_numbers and recievers
@@ -261,4 +262,5 @@ print(f"Elapsed time: {(end_time - start_time):.2f} seconds")
 # print best fitness value in scientific notation
 print(f"Best fitness value: {best_fitness:.6e}")
 
+print(fitnesses)
 
