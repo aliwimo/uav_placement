@@ -7,12 +7,12 @@ start_time = time.time()
 
 
 # set initial parameters' values
-population_size = 5
+population_size = 50
 dimension_size = 3
 donors_number = 1
 receivers_number = 1
 maximum_evaluations = 1
-bound = 1000
+bound = 200
 
 # other dependent parameters, no need to change
 current_evaluation = population_size
@@ -30,19 +30,23 @@ Users_Locations = np.loadtxt( 'users/UserLocations_20_50_200.dat' )
 #                       Functions                           #
 # ========================================================= #
 
-# generating the initial population
-def generate_population():
+# generating the initial drones
+def generate_drones():
     population = np.zeros((population_size, dimension_size))
-    for k in range(population_size):
-        population[k, :] = generate_drone()
+    i = 0
+    while i < population_size:
+        new_drone = generate_drone()
+        if not drone_is_inside(new_drone):
+            population[i, :] = new_drone
+            i += 1
     return population
 
 # generating just one drone
 def generate_drone():
-    drone = np.zeros((1, dimension_size))
-    drone[0, 0] = x_lower_bound + random() * (x_upper_bound - x_lower_bound)
-    drone[0, 1] = y_lower_bound + random() * (y_upper_bound - y_lower_bound)
-    drone[0, 2] = z_lower_bound + random() * (z_upper_bound - z_lower_bound)
+    drone = np.zeros(dimension_size)
+    drone[0] = x_lower_bound + random() * (x_upper_bound - x_lower_bound)
+    drone[1] = y_lower_bound + random() * (y_upper_bound - y_lower_bound)
+    drone[2] = z_lower_bound + random() * (z_upper_bound - z_lower_bound)
     return drone
 
 # calculating fitness of all drones in population
@@ -87,7 +91,7 @@ def perform_infection(x_k, x_m):
     return x_k
 
 # check if exceeded bounds
-def check_bounds(x):    
+def check_bounds(x):
     if x > upper_bound:
         x = upper_bound
     elif x < lower_bound:
@@ -127,12 +131,22 @@ def compare_with_best_fitness(x):
         best_fitness = x_fitness
         # print(best_fitness)
 
+# check if the drone is inside the building or not
+def drone_is_inside(drone):
+    x_in = False
+    y_in = False
+    z_in = False
+    if 0 <= drone[0] <= BUILDING[0]: x_in = True
+    if 0 <= drone[1] <= BUILDING[1]: y_in = True
+    if 0 <= drone[2] <= BUILDING[2]: z_in = True
+    return (x_in and y_in and z_in)
+
 # ========================================================= #
 #                      Start of IPA                         #
 # ========================================================= #
 
 # generating initial population
-population = generate_population()
+population = generate_drones()
 
 # calculating fitness of population
 fitnesses = calculate_fitnesses(population)
@@ -140,13 +154,16 @@ fitnesses = calculate_fitnesses(population)
 # finding best individual fitness
 best_fitness = min(fitnesses)
 
-print("==> Population: ")
-print(population)
-print("==> Fitnesses: ")
-print(fitnesses)
+# print("==> Population: ")
+# print(population)
+# print("==> Fitnesses: ")
+# print(fitnesses)
+
+for i in range(population_size):
+    print(f"Location: {population[i, :]} \t- Fitness: {fitnesses[i]} \t- is inside: {drone_is_inside(population[i])}")
 
 
-print(f"Initial best fitness value: {best_fitness}")
+# print(f"Initial best fitness value: {best_fitness}")
 # print(f"Number of parameters: {dimension_size}")
 # print(f"Population size: {population_size}")
 
