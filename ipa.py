@@ -132,7 +132,10 @@ def compare_with_best_fitness(x):
     x_fitness = fitness(x)
     if x_fitness < best_fitness:
         best_fitness = x_fitness
-        print(best_fitness)
+        # best_index = fitnesses.index(min(fitnesses))
+        best_index = np.where(fitnesses == best_fitness)
+        print(f"Best: {best_fitness} \t - location: {population[best_index]}")
+
 
 # check if the drone is inside the building or not
 def drone_is_inside(drone):
@@ -243,8 +246,10 @@ while current_evaluation < maximum_evaluations:
             break # if exceeded maximum evaluation number
 
 # print elapsed time
-# end_time = time.time()
-# print(f"Elapsed time: {(end_time - start_time):.2f} seconds")
+end_time = time.time()
+print(f"Elapsed time: {(end_time - start_time):.2f} seconds")
 
-# # print best fitness value in scientific notation
-# print(f"Best fitness value: {best_fitness:.6e}")
+# print best fitness value in scientific notation
+print(f"Best fitness value: {best_fitness:.6e}")
+
+
