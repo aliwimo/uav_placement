@@ -23,22 +23,20 @@ y_lower_bound = -bound
 z_upper_bound = bound
 z_lower_bound = 0
 
-BUILDING = [20, 50, 200]     #b1
+# BUILDING = [20, 50, 200]     #b1
 # BUILDING = [20, 50, 250]     #b2
 # BUILDING = [20, 50, 300]     #b3
 # BUILDING = [10, 50, 250]     #b4
 # BUILDING = [30, 50, 250]     #b5
-# BUILDING = [50, 50, 250]     #b6
-
-B_x, B_y, B_z = BUILDING[1], BUILDING[2], BUILDING[3]
+BUILDING = [50, 50, 250]     #b6
 
 # users location data file path
-user_data = string("users/UserLocations_", B_x, "_", B_y, "_", B_z, ".dat")
+user_data = string("users/UserLocations_", BUILDING[1], "_", BUILDING[2], "_", BUILDING[3], ".dat")
 Users_Locations = readdlm(user_data)
 
 # enable/disable store output into file mode
 store_output = true
-store_file_path = string("tests/output_", B_x, "_", B_y, "_", B_z, ".dat")
+store_file_path = string("tests/output_", BUILDING[1], "_",BUILDING[2], "_", BUILDING[3], ".dat")
 
 
 # ========================================================= #
