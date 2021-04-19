@@ -7,12 +7,12 @@ using Dates
 start_time = Dates.now()
 
 # set initial parameters' values
-population_size = 10
+population_size = 50
 dimension_size = 3
 donors_number = 1
 receivers_number = 1
-maximum_evaluations = 2500
-bound = 200
+maximum_evaluations = 5000
+bound = 1000
 
 # other dependent parameters, no need to change
 current_evaluation = population_size
@@ -23,8 +23,21 @@ y_lower_bound = -bound
 z_upper_bound = bound
 z_lower_bound = 0
 
-BUILDING = [20, 50, 200]     #b1
-Users_Locations = readdlm("users/UserLocations_20_50_200.dat")
+# BUILDING = [20, 50, 200]     #b1
+# BUILDING = [20, 50, 250]     #b2
+# BUILDING = [20, 50, 300]     #b3
+# BUILDING = [10, 50, 250]     #b4
+# BUILDING = [30, 50, 250]     #b5
+BUILDING = [50, 50, 250]     #b6
+
+# users location data file path
+user_data = string("users/UserLocations_", BUILDING[1], "_", BUILDING[2], "_", BUILDING[3], ".dat")
+Users_Locations = readdlm(user_data)
+
+# enable/disable store output into file mode
+store_output = true
+store_file_path = string("tests/output_", BUILDING[1], "_",BUILDING[2], "_", BUILDING[3], ".dat")
+
 
 # ========================================================= #
 #                       Functions                           #
@@ -164,7 +177,9 @@ function compare_with_best_fitness(x)
         global best_fitness = fitness(x)
         best_index = argmin(fitnesses)
         best = population[best_index, :]
-        println("Best: $best_fitness \t - location: $best")
+        if !store_output
+            println("Best: $best_fitness \t - location: $best")
+        end
     end
 end
 
@@ -192,18 +207,19 @@ end
 # generating initial population
 population = generate_drones()
 
-println(population)
-
 # calculating fitness of population
 fitnesses = calculate_fitnesses(population)
 
 # finding best individual fitness
 best_fitness = minimum(fitnesses)
 
+
 # print initial best fitness value and other statistics
-println("Initial best fitness value: $best_fitness")
-println("Number of parameters: $dimension_size")
-println("Population size: $population_size")
+if !store_output
+    println("Initial best fitness value: $best_fitness")
+    println("Number of parameters: $dimension_size")
+    println("Population size: $population_size")
+end
 
 while current_evaluation < maximum_evaluations
 
@@ -290,12 +306,25 @@ while current_evaluation < maximum_evaluations
     end
 end
 
-# print elapsed time
-end_time = Dates.now()
-total_time = (Dates.value(end_time) - Dates.value(start_time)) / 1000
-@printf("Elapsed time: %.2f seconds\n", total_time)
 
-# print best fitness value in scientific notation
-@printf("Best fitness value: %.6e\n", best_fitness)
+if !store_output
+    # print elapsed time
+    end_time = Dates.now()
+    total_time = (Dates.value(end_time) - Dates.value(start_time)) / 1000
+    @printf("Elapsed time: %.2f seconds\n", total_time)
 
-println(fitnesses)
+    # print best fitness value in scientific notation
+    @printf("Best fitness value: %.6e\n", best_fitness)
+end
+
+if store_output
+    best_index = argmin(fitnesses)
+    best = population[best_index, :]
+    x = best[1]
+    y = best[2]
+    z = best[3]
+    output_str = "$best_fitness $x $y $z\n"
+    open(store_file_path, "a+") do file
+        write(file, output_str) 
+    end 
+end
