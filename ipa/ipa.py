@@ -22,18 +22,18 @@ y_lower_bound = -bound
 z_upper_bound = bound
 z_lower_bound = 0
 
+BUILDING = [20, 50, 200]     #b1
+# BUILDING = [20, 50, 250]     #b2
+# BUILDING = [20, 50, 300]     #b3
+# BUILDING = [10, 50, 250]     #b4
+# BUILDING = [30, 50, 250]     #b5
+# BUILDING = [50, 50, 250]     #b6
+
+# users location data file path
+
 BUILDING        = [20, 50, 200]     #b1
-Users_Locations = np.loadtxt( 'users/UserLocations_20_50_200.dat' )     #u2
-# BUILDING        = [20, 50, 250]     #b2
-# Users_Locations = np.loadtxt( 'users/UserLocations_20_50_250.dat' )     #u2
-# BUILDING        = [20, 50, 300]     #b3
-# Users_Locations = np.loadtxt( 'users/UserLocations_20_50_300.dat' )     #u3
-# BUILDING        = [10, 50, 250]     #b4
-# Users_Locations = np.loadtxt( 'users/UserLocations_10_50_250.dat' )     #u4
-# BUILDING        = [30, 50, 250]     #b5
-# Users_Locations = np.loadtxt( 'users/UserLocations_30_50_250.dat' )     #u5
-# BUILDING        = [50, 50, 250]     #b6
-# Users_Locations = np.loadtxt( 'users/UserLocations_50_50_250.dat' )     #u6
+user_data = f"users/UserLocations_{BUILDING[0]}_{BUILDING[1]}_{BUILDING[2]}.dat"
+Users_Locations = np.loadtxt(user_data)     #u2
 
 # ========================================================= #
 #                       Functions                           #
